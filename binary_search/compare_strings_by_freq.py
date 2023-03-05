@@ -1,7 +1,9 @@
+from bisect import bisect_right
 from collections import defaultdict
+from typing import List
 
 class Solution:
-    def f(self, s):
+    def get_frequency_of_smallest_character(self, s: str) -> int:
         freq = defaultdict(int)
         smallest = s[0]
         for ch in s:
@@ -11,19 +13,13 @@ class Solution:
         return freq[smallest]
 
     def numSmallerByFrequency(self, queries: List[str], words: List[str]) -> List[int]:
-        words = sorted(words, key=self.f)
-        words_len = len(words)
-        answer = []
+        words.sort(key=self.get_frequency_of_smallest_character)
+        word_count = len(words)
+        results = []
 
         for query in queries:
-            low, high = 0, words_len - 1
-            mid = words_len
-            query_freq = self.f(query)
-            while low <= high:
-                mid = low + (high - low) // 2
-                if query_freq >= self.f(words[mid]):
-                    low = mid + 1
-                else:
-                    high = mid - 1
-            answer.append(words_len - low)
-        return answer
+            query_freq = self.get_frequency_of_smallest_character(query)
+            index = bisect_right(words, query_freq, key=self.get_frequency_of_smallest_character)
+            results.append(word_count - index)
+
+        return results
