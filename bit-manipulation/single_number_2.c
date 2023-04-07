@@ -1,4 +1,4 @@
-#define BITS 32
+/** #define BITS 32
 
 int singleNumber(int* nums, int numsSize){
     int base_count;
@@ -20,4 +20,18 @@ int singleNumber(int* nums, int numsSize){
     }
 
     return (single);
+}
+**/
+int singleNumber(int* nums, int numsSize){
+    int once, twice;
+    int i;
+
+    once = twice = 0;
+    for (i = 0; i < numsSize; i++)
+    {
+       once = (once ^ nums[i]) & ~twice;
+       twice = (twice ^ nums[i]) & ~once;
+    }
+
+    return (once);
 }
