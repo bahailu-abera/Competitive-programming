@@ -1,3 +1,6 @@
+/*
+DP Solution
+ */
 class Solution {
 public:
     int backtrack(vector<vector<int>>& costs, int index, int a)
@@ -27,4 +30,30 @@ public:
     }
 private:
     vector<vector<int>> memo;
+};
+
+/*
+Greedy solution
+*/
+
+class Solution {
+public:
+    int twoCitySchedCost(vector<vector<int>>& costs) {
+        int n = (int)costs.size();
+        int total = 0;
+
+        sort(costs.begin(), costs.end(), [](vector<int>& l, vector<int>& r) {
+            return l[0] - l[1] < r[0] - r[1];
+        });
+
+        for (int i = 0; i < n; i++)
+        {
+            if (i < n / 2)
+                total += costs[i][0];
+            else
+                total += costs[i][1];
+        }
+
+        return total;
+    }
 };
