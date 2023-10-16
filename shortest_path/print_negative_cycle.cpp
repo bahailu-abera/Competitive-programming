@@ -4,6 +4,64 @@ using namespace std;
 
 #define int long long
 
+bool findCycle(vector<vector<int>>& edges, vector<int>& parent, vector<int>& distance
+    ,int source)
+{
+    int n = (int)parent.size() - 1;
+    distance[source] = 0;
+
+    for (int i = 1; i < n; i++)
+    {
+        for (auto edge: edges)
+        {
+            if (distance[edge[0]] != LONG_LONG_MAX && distance[edge[1]] > distance[edge[0]] + edge[2])
+            {
+                distance[edge[1]] = distance[edge[0]] + edge[2];
+                parent[edge[1]] = edge[0];
+            }
+        }
+    }
+
+    int start = 0;
+
+    for (auto edge: edges)
+    {
+        if (distance[edge[0]] != LONG_LONG_MAX && distance[edge[0]] + edge[2] < distance[edge[1]])
+        {
+            start = edge[1];
+            break;
+        }
+    }
+
+    if (start == 0)
+    {
+        return false;
+    }
+
+    cout << "YES\n";
+
+    for (int i = 0; i < n; i++)
+        start = parent[start];
+
+    vector<int> cycle;
+
+    cycle.push_back(start);
+
+    int current = parent[start];
+
+    while (current != start)
+        cycle.push_back(current), current = parent[current];
+
+    cycle.push_back(start);
+
+    for (int i = (int)cycle.size() - 1; i >= 0; i--)
+        cout << cycle[i] << " ";
+
+    cout << "\n";
+
+    return true;
+}
+
 void solve()
 {
     int n, m;
@@ -22,65 +80,21 @@ void solve()
         edges[i] = {a, b, c};
     }
 
-    int source = edges[0][0];
+    vector<int> parent(n + 1, -1);
 
-    vector<int> parent(n + 1, source);
+    bool exist = false;
 
-    distance[source] = 0;
-
-    for (int i = 1; i < n; i++)
+    for (int i = 1; i <= n; i++)
     {
-        for (auto edge: edges)
+        if (parent[i] == -1 && findCycle(edges, parent, distance, i))
         {
-
-            if (distance[edge[0]] != LONG_LONG_MAX && distance[edge[1]] > distance[edge[0]] + edge[2])
-            {
-                distance[edge[1]] = distance[edge[0]] + edge[2];
-                parent[edge[1]] = edge[0];
-            }
-        }
-    }
-
-    int start = 0;
-
-    for (auto edge: edges)
-    {
-        if (distance[edge[0]] != LONG_LONG_MAX && distance[edge[0]] + edge[2] < distance[edge[1]])
-        {
-            start = edge[1];
+	    exist = true;
             break;
         }
-
     }
 
-    if (start == 0)
-    {
+    if (!exist)
         cout << "NO\n";
-    }
-
-    else
-    {
-        cout << "YES\n";
-
-        for (int i = 0; i < n; i++)
-            start = parent[start];
-
-        vector<int> cycle;
-
-        cycle.push_back(start);
-
-        int current = parent[start];
-
-        while (current != start)
-            cycle.push_back(current), current = parent[current];
-
-        cycle.push_back(start);
-
-        for (int i = (int)cycle.size() - 1; i >= 0; i--)
-            cout << cycle[i] << " ";
-
-        cout << "\n";
-    }
 }
 
 
